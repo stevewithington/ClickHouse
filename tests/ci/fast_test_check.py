@@ -110,6 +110,8 @@ if __name__ == "__main__":
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
+    # Fix possible root:root ccache
+    subprocess.check_call(f"sudo chown -R ubuntu:ubuntu {caches_path}", shell=True)
     cache_path = os.path.join(caches_path, "fasttest")
 
     logging.info("Will try to fetch cache for our build")
