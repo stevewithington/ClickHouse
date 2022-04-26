@@ -7,6 +7,7 @@ import logging
 import sys
 
 SCRIPT_PATH = os.path.realpath(__file__)
+IMAGE_TYPE = "binary"
 
 
 def check_image_exists_locally(image_name):
@@ -165,6 +166,9 @@ def parse_env_variables(
         cmake_flags.append("-DCMAKE_INSTALL_LOCALSTATEDIR=/var")
         if is_release_build(build_type, package_type, sanitizer, split_binary):
             cmake_flags.append("-DINSTALL_STRIPPED_BINARIES=ON")
+            # Explicitly enable lto=thin
+            cmake_flags.append("-DENABLE_THINLTO=ON")
+
             if is_cross_arm:
                 cmake_flags.append("-DBUILD_STANDALONE_KEEPER=1")
             else:
@@ -216,11 +220,7 @@ def parse_env_variables(
         result.append("MAKE_RPM=true")
         result.append("MAKE_TGZ=true")
 
-    if with_binaries == "programs":
-        result.append("BINARY_OUTPUT=programs")
-    elif with_binaries == "tests":
-        result.append("ENABLE_TESTS=1")
-        result.append("BINARY_OUTPUT=tests")
+    if with_binaries == "tests":
         cmake_flags.append("-DENABLE_TESTS=1")
 
     if split_binary:
@@ -347,22 +347,18 @@ if __name__ == "__main__":
     else:
         ch_root = args.clickhouse_repo_path
 
-    if args.additional_pkgs and image_type != "deb":
+    if args.additional_pkgs and args.package_type != "deb":
         raise Exception("Can build additional packages only in deb build")
 
-    if args.with_binaries != "" and image_type != "deb":
+    if args.with_binaries != "" and args.package_type != "deb":
         raise Exception("Can add additional binaries only in deb build")
 
-    if args.with_binaries != "" and image_type == "deb":
+    if args.with_binaries != "" and args.package_type == "deb":
         logging.info("Should place %s to output", args.with_binaries)
 
     dockerfile = os.path.join(ch_root, "docker/packager", image_type, "Dockerfile")
     image_with_version = image_name + ":" + args.docker_image_version
-    if (
-        image_type != "freebsd"
-        and not check_image_exists_locally(image_name)
-        or args.force_build_image
-    ):
+    if not check_image_exists_locally(image_name) or args.force_build_image:
         if not pull_image(image_with_version) or args.force_build_image:
             build_image(image_with_version, dockerfile)
     env_prepared = parse_env_variables(

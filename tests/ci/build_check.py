@@ -26,20 +26,6 @@ from tee_popen import TeePopen
 IMAGE_NAME = "clickhouse/binary-builder"
 
 
-def _can_export_binaries(build_config: BuildConfig) -> bool:
-    if build_config["package_type"] != "deb":
-        return False
-    if build_config["bundled"] != "bundled":
-        return False
-    if build_config["splitted"] == "splitted":
-        return False
-    if build_config["sanitizer"] != "":
-        return True
-    if build_config["build_type"] != "":
-        return True
-    return False
-
-
 def get_packager_cmd(
     build_config: BuildConfig,
     packager_path: str,
@@ -73,9 +59,7 @@ def get_packager_cmd(
 
     cmd += f" --docker-image-version={image_version}"
     cmd += f" --version={build_version}"
-
-    if _can_export_binaries(build_config):
-        cmd += " --with-binaries=tests"
+    cmd += " --with-binaries=tests"
 
     if official:
         cmd += " --official"

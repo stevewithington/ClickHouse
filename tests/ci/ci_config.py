@@ -109,17 +109,6 @@ CI_CONFIG = {
             "tidy": "disable",
             "with_coverage": False,
         },
-        "binary_release": {
-            "compiler": "clang-13",
-            "build_type": "",
-            "sanitizer": "",
-            "package_type": "binary",
-            "static_binary_name": "amd64",
-            "bundled": "bundled",
-            "splitted": "unsplitted",
-            "tidy": "disable",
-            "with_coverage": False,
-        },
         "binary_tidy": {
             "compiler": "clang-13",
             "build_type": "debug",
@@ -147,17 +136,6 @@ CI_CONFIG = {
             "sanitizer": "",
             "package_type": "binary",
             "static_binary_name": "macos",
-            "bundled": "bundled",
-            "splitted": "unsplitted",
-            "tidy": "disable",
-            "with_coverage": False,
-        },
-        "binary_aarch64": {
-            "compiler": "clang-13-aarch64",
-            "build_type": "",
-            "sanitizer": "",
-            "package_type": "binary",
-            "static_binary_name": "aarch64",
             "bundled": "bundled",
             "splitted": "unsplitted",
             "tidy": "disable",
@@ -207,13 +185,11 @@ CI_CONFIG = {
             "package_tsan",
             "package_msan",
             "package_debug",
-            "binary_release",
         ],
         "ClickHouse special build check (actions)": [
             "binary_tidy",
             "binary_splitted",
             "binary_darwin",
-            "binary_aarch64",
             "binary_freebsd",
             "binary_darwin_aarch64",
             "binary_ppc64le",
@@ -327,7 +303,7 @@ CI_CONFIG = {
             "required_build": "binary_gcc",
         },
         "Unit tests (release-clang, actions)": {
-            "required_build": "binary_release",
+            "required_build": "package_release",
         },
         "Unit tests (asan, actions)": {
             "required_build": "package_asan",
@@ -356,9 +332,6 @@ CI_CONFIG = {
         "AST fuzzer (UBSan, actions)": {
             "required_build": "package_ubsan",
         },
-        "Release (actions)": {
-            "required_build": "package_release",
-        },
         "Stateless tests flaky check (address, actions)": {
             "required_build": "package_asan",
         },
@@ -366,7 +339,7 @@ CI_CONFIG = {
             "required_build": "package_asan",
         },
         "ClickHouse Keeper Jepsen (actions)": {
-            "required_build": "binary_release",
+            "required_build": "package_release",
         },
         "Performance Comparison (actions)": {
             "required_build": "performance",
