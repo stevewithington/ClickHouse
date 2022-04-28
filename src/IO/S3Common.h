@@ -77,7 +77,6 @@ struct URI
 };
 
 size_t getObjectSize(std::shared_ptr<const Aws::S3::S3Client> client_ptr, const String & bucket, const String & key, const String & version_id = {}, bool throw_on_error = true);
->>>>>>> master
 
 }
 

@@ -101,7 +101,7 @@ std::unique_ptr<ReadBufferFromFileBase> S3ObjectStorage::readObjects( /// NOLINT
 
    auto settings_ptr = s3_settings.get();
    auto s3_impl = std::make_unique<ReadBufferFromS3Gather>(
-       client.get(), bucket, common_path_prefix, blobs_to_read,
+       client.get(), bucket, version_id, common_path_prefix, blobs_to_read,
        settings_ptr->s3_max_single_read_retries, disk_read_settings);
 
    if (read_settings.remote_fs_method == RemoteFSReadMethod::threadpool)
