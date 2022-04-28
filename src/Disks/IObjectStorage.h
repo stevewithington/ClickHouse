@@ -101,8 +101,15 @@ public:
 
     static ThreadPool & getThreadPoolWriter();
 
+    virtual void shutdown() = 0;
+
+    virtual void startup() = 0;
+
+
 protected:
     FileCachePtr cache;
 };
+
+using ObjectStoragePtr = std::unique_ptr<IObjectStorage>;
 
 }

@@ -390,4 +390,23 @@ void S3ObjectStorage::setNewClient(std::unique_ptr<Aws::S3::S3Client> && client_
     client.set(std::move(client_));
 }
 
+void S3ObjectStorage::shutdown()
+{
+    auto client_ptr = client.get();
+    /// This call stops any next retry attempts for ongoing S3 requests.
+    /// If S3 request is failed and the method below is executed S3 client immediately returns the last failed S3 request outcome.
+    /// If S3 is healthy nothing wrong will be happened and S3 requests will be processed in a regular way without errors.
+    /// This should significantly speed up shutdown process if S3 is unhealthy.
+    const_cast<Aws::S3::S3Client &>(*client_ptr).DisableRequestProcessing();
+}
+
+void S3ObjectStorage::startup()
+{
+    auto client_ptr = client.get();
+
+    /// Need to be enabled if it was disabled during shutdown() call.
+    const_cast<Aws::S3::S3Client &>(*client_ptr.get()).EnableRequestProcessing();
+}
+
+
 }

@@ -280,7 +280,6 @@ void DiskS3::createHardLink(const String & src_path, const String & dst_path, bo
 
 void DiskS3::shutdown()
 {
-    auto settings = current_settings.get();
     auto client = current_client.get();
     /// This call stops any next retry attempts for ongoing S3 requests.
     /// If S3 request is failed and the method below is executed S3 client immediately returns the last failed S3 request outcome.
