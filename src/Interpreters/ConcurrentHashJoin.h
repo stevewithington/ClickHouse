@@ -15,8 +15,7 @@
 
 namespace DB
 {
-namespace JoinStuff
-{
+
 /**
  * Can run addJoinedBlock() parallelly to speedup the join process. On test, it almose linear speedup by
  * the degree of parallelism.
@@ -84,5 +83,5 @@ private:
     void dispatchBlock(BlockDispatchControlData & dispatch_data, Block & from_block, Blocks & dispatched_blocks);
 
 };
-}
+
 }

@@ -22,16 +22,17 @@
 #include <base/logger_useful.h>
 #include <Common/Exception.h>
 #include <Common/typeid_cast.h>
+
 namespace DB
 {
+
 namespace ErrorCodes
 {
     extern const int LOGICAL_ERROR;
     extern const int SET_SIZE_LIMIT_EXCEEDED;
     extern const int BAD_ARGUMENTS;
 }
-namespace JoinStuff
-{
+
 ConcurrentHashJoin::ConcurrentHashJoin(ContextPtr context_, std::shared_ptr<TableJoin> table_join_, size_t slots_, const Block & left_sample_block, const Block & right_sample_block, bool any_take_last_row_)
     : context(context_)
     , table_join(table_join_)
@@ -241,8 +242,6 @@ void ConcurrentHashJoin::dispatchBlock(BlockDispatchControlData & dispatch_data,
             dispatched_blocks[block_index].getByPosition(i).column = std::move(dispatched_columns[block_index]);
         }
     }
-
 }
 
-}
 }
