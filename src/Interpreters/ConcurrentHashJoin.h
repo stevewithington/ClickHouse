@@ -49,6 +49,8 @@ public:
     std::shared_ptr<NotJoinedBlocks>
     getNonJoinedBlocks(const Block & left_sample_block, const Block & result_sample_block, UInt64 max_block_size) const override;
 private:
+    Blocks dispatchBlock(const Strings & key_columns_names, const Block & from_block);
+
     struct InternalHashJoin
     {
         std::mutex mutex;
@@ -67,21 +69,7 @@ private:
     mutable std::mutex totals_mutex;
     Block totals;
 
-    struct BlockDispatchControlData
-    {
-        std::shared_ptr<ExpressionActions> hash_expression_actions;
-        String hash_column_name;
-        BlockDispatchControlData() = default;
-    };
-
-    std::vector<std::shared_ptr<BlockDispatchControlData>> dispatch_datas;
-
     Poco::Logger * logger = &Poco::Logger::get("ConcurrentHashJoin");
-
-    std::pair<std::shared_ptr<ExpressionActions>, String> buildHashExpressionAction(const Block & block, const Strings & based_columns_names);
-
-    void dispatchBlock(BlockDispatchControlData & dispatch_data, Block & from_block, Blocks & dispatched_blocks);
-
 };
 
 }
